@@ -30,11 +30,11 @@ app.intent('Default Welcome Intent', async (conv) => {
     if (!name) {
         // Asks the user's permission to know their name, for personalization.
         conv.ask(new Permission({
-            context: `Hi there, to get to know you better`,
+            context: `Olá, para te conhecer melhor`,
             permissions: 'NAME',
         }));
     } else {
-        conv.ask(`Hi again, ${name}. What do you want to know?`);
+        conv.ask(`Olá, ${name}. O que você deseja procurar?`);
     }
 });
 
@@ -43,14 +43,14 @@ app.intent('Default Welcome Intent', async (conv) => {
 app.intent('actions_intent_PERMISSION', (conv, params, permissionGranted) => {
     if (!permissionGranted) {
         // If the user denied our request, go ahead with the conversation.
-        conv.ask(`OK, no worries. What do you want to know?`);
-        conv.ask(new Suggestions('Search for Star Wars', "What's the number of Fox?", "What's the grade in Telecine Premium?"));
+        conv.ask(`OK, sem problemas. O que deseja saber?`);
+        conv.ask(new Suggestions('Procurar Star Wars', "Qual o número da Fox?", "O que está passando no Telecine Premium?"));
     } else {
         // If the user accepted our request, store their name in
         // the 'conv.data' object for the duration of the conversation.
         conv.user.storage.userName = conv.user.name.display;
-        conv.ask(`Thanks, ${conv.user.storage.userName}. What do you want to know?`);
-        conv.ask(new Suggestions('Search for Star Wars', "What's the number of Fox?", "What's the grade in Telecine Premium?"));
+        conv.ask(`Obrigado, ${conv.user.storage.userName}. O que deseja saber?`);
+        conv.ask(new Suggestions('Procurar Star Wars', "Qual o número da Fox?", "O que está passando no Telecine Premium?"));
     }
 });
 
@@ -63,12 +63,12 @@ app.intent('Movie Search', async (conv, { movieName }) => {
         // to embed an audio snippet in the response.
         conv.ask(`<speak>${conv.user.storage.userName}, ` +
             `${movie}.` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Yes', 'Não'));
     } else {
         conv.ask(`<speak>${movie}.` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Yes', 'Não'));
     }
 });
 
@@ -81,12 +81,12 @@ app.intent('Channel Search', async (conv, { channelName }) => {
         // to embed an audio snippet in the response.
         conv.ask(`<speak>${conv.user.storage.userName}, ` +
             `${channel}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     } else {
         conv.ask(`<speak>${channel}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     }
 });
 
@@ -99,12 +99,12 @@ app.intent('Grade Search', async (conv, { channelName }) => {
         // to embed an audio snippet in the response.
         conv.ask(`<speak>${conv.user.storage.userName}, ` +
             `${grade}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     } else {
         conv.ask(`<speak>${grade}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     }
 });
 
@@ -117,25 +117,25 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
         // to embed an audio snippet in the response.
         conv.ask(`<speak>${conv.user.storage.userName}, ` +
             `${program}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     } else {
         conv.ask(`<speak>${program}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+            ` Deseja procurar mais alguma coisa?</speak>`);
+        conv.ask(new Suggestions('Sim', 'Não'));
     }
 });
 
 // Handle the Dialogflow follow-up intents
 app.intent(['Movie Search - yes', 'Channel Search - yes'], (conv) => {
-    conv.ask('Do you want to search channels, grades or movies?');
+    conv.ask('Deseja procurar canais, filmes ou programações?');
     // If the user is using a screened device, display the carousel
     //if (conv.screen) return conv.ask(optionsCarousel());
 });
 
 
 async function getMovie(movieName) {
-    const language = 'en-US';
+    const language = 'pt-BR';
     const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEYDB}&language=${language}&query=${movieName}`;
     let response = await getData(url);
 
@@ -189,19 +189,18 @@ async function getChannelNumber(channelName) {
         st_canal = setWordRequirements(st_canal);
     const url = `${APIUrl}/api/admin/channels/getIDChannelByName?st_canal=${st_canal}&id_cidade=1`
     let response_ID = await getDataText(url)
-    //return (`I get here with ${response_ID} and ${st_canal}` )
     if (response_ID != false) {
         const new_url = `${APIUrl}/api/admin/channels/getChannelByID?id_revel=${response_ID}`
         let response = await getData(new_url)
         if (response != false) {
             const name = response.nome
             const number = response.cn_canal
-            return `The channel ${name} is the ${number}.`
+            return `O canal ${name} é o ${number}.`
         } else {
-            return `There was a problem, please try again.`
+            return `Ocorreu um problema, tente novamente.`
         }
     } else {
-        return "There was a problem finding the channel, please try again."
+        return "Ocorreu um problema procurando pelo canal."
     }
 }
 
@@ -215,10 +214,11 @@ async function getChannelGradeNow(channelName) {
     if (response != false) {
         let title = response.titulo;
         let final = new Date(response.dh_fim);
-        let hours = setTimeUSFormat(final)
-        return `${title} will be on ${channelName} until ${hours}.`
+        let hours  = final.getUTCHours()
+        //let hours = setTimeUSFormat(final)
+        return `${title} irá passar no ${channelName} até às ${hours}.`
     } else {
-        return "There was a problem, please try again."
+        return `Ocorreu um problema, tente novamente.`
     }
 }
 
@@ -237,14 +237,14 @@ async function getNewExhibitions(channelName, title){
         let time_end = setTimeUSFormat(date_end)
         let month = date_start.getUTCMonth()
         let day = response.dh_inicio.slice(8,10)
-        if(day <= 3){
+        /*if(day <= 3){
             day = day + prefixNames[day-1]
         }else{
             day = day + prefixNames[3]
-        }
-        return `${title} will be on ${channelName} again on ${monthNames[month]} ${day} from ${time_start} to ${time_end}.` 
+        }*/
+        return `${title} estará noa${channelName} novamente dia ${day}/${month+1} das ${time_start} às ${time_end}.` 
     } else {
-        return "There was a problem, please try again."
+        return `Ocorreu um problema, tente novamente.`
     }
 }
 // Set the DialogflowApp object to handle the HTTPS POST request.
