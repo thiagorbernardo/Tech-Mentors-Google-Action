@@ -15,6 +15,7 @@ const {
     BasicCard,
     Permission,
     Suggestions,
+    Button,
     Carousel,
     Image,
 } = require('actions-on-google');
@@ -142,20 +143,56 @@ app.intent('FaturaPos', async (conv) => {
 
     }
 });
-app.intent(['FaturaPos - 55 10 10 20 99'], async(conv) => {
+app.intent(['FaturaPos - 55 10 10 20 99'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber)
     conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
     conv.ask(new Suggestions('E-mail', 'Now'));
 });
+app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
+    const name = conv.user.storage.userName;
+    const deviceNumber = "55 10 10 20 99"
+    const bill = await getBillByName(name, deviceNumber);
+    conv.ask("Here is your bill!");
+    conv.ask(new BasicCard({
+        text: `The value of the invoice from May is ${bill}.`,
+        title: `Bill for ${deviceNumber}`,
+        buttons: new Button({
+            title: 'Download Bill',
+            url: 'https://www.cinq.com.br/'
+        }),
+        image: new Image({
+            url: "https://lh3.googleusercontent.com/W1Jwfw3dKIo8BsQFaLc0y4UflpgSUlDKiWn4LgjKXFW1Uxj1t8qfwYu987CnBDWdsENT",
+            alt: "PDF of your bill",
+        })
+    }));
+});
 
-app.intent(['FaturaPos - 55 10 20 40 88'], async(conv) => {
+app.intent(['FaturaPos - 55 10 20 40 88'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
     conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
     conv.ask(new Suggestions('E-mail', 'Now'));
+});
+app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
+    const name = conv.user.storage.userName;
+    const deviceNumber = "55 10 20 40 88"
+    const bill = await getBillByName(name, deviceNumber)
+    conv.ask("Here is your bill!");
+    conv.ask(new BasicCard({
+        text: `The value of the invoice from May is ${bill}.`,
+        title: `Bill for ${deviceNumber}`,
+        buttons: new Button({
+            title: 'Download Bill',
+            url: 'https://www.cinq.com.br/'
+        }),
+        image: new Image({
+            url: "https://lh3.googleusercontent.com/W1Jwfw3dKIo8BsQFaLc0y4UflpgSUlDKiWn4LgjKXFW1Uxj1t8qfwYu987CnBDWdsENT",
+            alt: "PDF of your bill",
+        })
+    }));
 });
 
 // Handle the Dialogflow follow-up intents
