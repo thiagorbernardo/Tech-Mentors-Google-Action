@@ -1,11 +1,13 @@
 'use strict';
+/* Modules */
 const fetch = require('node-fetch');
-const API_KEYDB = '33b98784c91a88fdf6bf36da722e8ece'
-const APIUrl = 'https://claromentors.now.sh'
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
-const prefixNames = ["st", "nd", "rd", "th"]
+/* Master Functions for Intents  */
+const getChannelGradeNow = require("./intents/getChannelGradeNow");
+const getChannelNumber = require("./intents/getChannelNumber");
+const getMovie = require("./intents/getMovie");
+const getNewExhibitions = require("./intents/getNewExhibitions");
+const getBillByName = require("./intents/getBillByName");
+
 // Import the Dialogflow module and response creation dependencies
 // from the Actions on Google client library.
 const {
@@ -125,6 +127,36 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
         conv.ask(new Suggestions('Yes', 'No'));
     }
 });
+// Handle the Dialogflow intent named 'FaturaPos'.
+// The intent collects a parameter named 'channelName'.
+app.intent('FaturaPos', async (conv) => {
+    if (!conv.user.storage.userName) {
+        conv.ask(new Permission({
+            context: `You need to let me see your name"`,
+            permissions: 'NAME',
+        }));
+    } else {
+        const name = conv.user.storage.userName;
+        conv.ask(`${name}, which number do you want to know?`);
+        conv.ask(new Suggestions('55 10 10 20 99', '55 10 20 40 88'));
+
+    }
+});
+app.intent(['FaturaPos - 55 10 10 20 99'], async(conv) => {
+    const name = conv.user.storage.userName;
+    const deviceNumber = "55 10 10 20 99"
+    const bill = await getBillByName(name, deviceNumber)
+    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
+    conv.ask(new Suggestions('E-mail', 'Now'));
+});
+
+app.intent(['FaturaPos - 55 10 20 40 88'], async(conv) => {
+    const name = conv.user.storage.userName;
+    const deviceNumber = "55 10 20 40 88"
+    const bill = await getBillByName(name, deviceNumber)
+    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
+    conv.ask(new Suggestions('E-mail', 'Now'));
+});
 
 // Handle the Dialogflow follow-up intents
 app.intent(['Movie Search - yes', 'Channel Search - yes'], (conv) => {
@@ -133,119 +165,5 @@ app.intent(['Movie Search - yes', 'Channel Search - yes'], (conv) => {
     //if (conv.screen) return conv.ask(optionsCarousel());
 });
 
-
-async function getMovie(movieName) {
-    const language = 'en-US';
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEYDB}&language=${language}&query=${movieName}`;
-    let response = await getData(url);
-
-    if (response.results != []) {
-        return response.results[0].overview;
-    } else {
-        return "Não achei este filme"
-    }
-}
-
-async function getData(url) {
-    return await fetch(url)
-        .then(res => res.json()) // expecting a json response
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            console.log(err);
-        });
-}
-
-async function getDataText(url) {
-    return await fetch(url)
-        .then(res => res.text()) // expecting a json response
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            console.log(err);
-        });
-}
-
-function setWordRequirements(word) {
-    let final = "";
-    let words = word.split(" ");
-    for (let i = 0; i < words.length; i++) {
-        final += words[i] + "_";
-    }
-    return final.slice(0, final.length - 1);
-}
-function setTimeUSFormat(date){
-    let hours  = date.getUTCHours()
-    let AmOrPm = hours >= 12 ? 'pm' : 'am';
-    hours = (hours % 12) || 12;
-    let minutes = date.getUTCMinutes();
-    return (hours + ":" + minutes + " " + AmOrPm)
-}
-async function getChannelNumber(channelName) {
-    let st_canal = channelName.toLowerCase()
-    if (st_canal.length > 1)
-        st_canal = setWordRequirements(st_canal);
-    const url = `${APIUrl}/api/admin/channels/getIDChannelByName?st_canal=${st_canal}&id_cidade=1`
-    let response_ID = await getDataText(url)
-    //return (`I get here with ${response_ID} and ${st_canal}` )
-    if (response_ID != false) {
-        const new_url = `${APIUrl}/api/admin/channels/getChannelByID?id_revel=${response_ID}`
-        let response = await getData(new_url)
-        if (response != false) {
-            const name = response.nome
-            const number = response.cn_canal
-            return `The channel ${name} is the ${number}.`
-        } else {
-            return `There was a problem, please try again.`
-        }
-    } else {
-        return "There was a problem finding the channel, please try again."
-    }
-}
-
-async function getChannelGradeNow(channelName) {
-    let st_canal = channelName.toLowerCase();
-    if (st_canal.length > 1)
-        st_canal = setWordRequirements(st_canal);
-    const url = `${APIUrl}/api/admin/channels/getChannelGradeNow?st_canal=${st_canal}&id_cidade=1`;
-    const response = await getData(url);
-
-    if (response != false) {
-        let title = response.titulo;
-        let final = new Date(response.dh_fim);
-        let hours = setTimeUSFormat(final)
-        return `${title} will be on ${channelName} until ${hours}.`
-    } else {
-        return "There was a problem, please try again."
-    }
-}
-
-async function getNewExhibitions(channelName, title){
-    let st_canal = channelName.toLowerCase();
-    if (st_canal.length > 1)
-        st_canal = setWordRequirements(st_canal);
-    
-    const url = `${APIUrl}/api/admin/channels/getNewExhibitions?st_canal=${st_canal}&title=${title}&id_cidade=1`
-    const response = await getData(url);
-    if(response != false){
-        let title = response.titulo;
-        let date_start = new Date(response.dh_inicio)
-        let date_end = new Date(response.dh_fim)
-        let time_start = setTimeUSFormat(date_start)
-        let time_end = setTimeUSFormat(date_end)
-        let month = date_start.getUTCMonth()
-        let day = response.dh_inicio.slice(8,10)
-        if(day <= 3){
-            day = day + prefixNames[day-1]
-        }else{
-            day = day + prefixNames[3]
-        }
-        return `${title} will be on ${channelName} again on ${monthNames[month]} ${day} from ${time_start} to ${time_end}.` 
-    } else {
-        return "There was a problem, please try again."
-    }
-}
 // Set the DialogflowApp object to handle the HTTPS POST request.
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);

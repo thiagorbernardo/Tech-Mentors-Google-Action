@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
-module.exports = async function getData(url) {
+module.exports = async function getDataText(url) {
     return await fetch(url)
-        .then(res => res.json()) // expecting a json response
+        .then(res => res.text()) // expecting a json response
         .then(json => {
             return json;
         })
