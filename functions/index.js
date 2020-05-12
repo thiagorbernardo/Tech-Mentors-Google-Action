@@ -38,6 +38,7 @@ app.intent('Default Welcome Intent', async (conv) => {
         }));
     } else {
         conv.ask(`Hi again, ${name}. What do you want to know?`);
+        conv.ask(new Suggestions('My bill', "News today"));
     }
 });
 
@@ -47,13 +48,13 @@ app.intent('actions_intent_PERMISSION', (conv, params, permissionGranted) => {
     if (!permissionGranted) {
         // If the user denied our request, go ahead with the conversation.
         conv.ask(`OK, no worries. What do you want to know?`);
-        conv.ask(new Suggestions('Search for Star Wars', "What's the number of Fox?", "What's the grade in Telecine Premium?"));
+        conv.ask(new Suggestions('My bill', "News today"));
     } else {
         // If the user accepted our request, store their name in
         // the 'conv.data' object for the duration of the conversation.
         conv.user.storage.userName = conv.user.name.display;
         conv.ask(`Thanks, ${conv.user.storage.userName}. What do you want to know?`);
-        conv.ask(new Suggestions('Search for Star Wars', "What's the number of Fox?", "What's the grade in Telecine Premium?"));
+        conv.ask(new Suggestions('My bill', "News today"));
     }
 });
 
@@ -147,8 +148,8 @@ app.intent(['FaturaPos - 55 10 10 20 99'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
-    conv.ask(new Suggestions('E-mail', 'Now'));
+    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill} pesos. Do you wanna send it to you email or prefer to receive it now?</speak>`);
+    conv.ask(new Suggestions('E-mail', 'Here'));
 });
 app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
     const name = conv.user.storage.userName;
@@ -156,7 +157,7 @@ app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
     const bill = await getBillByName(name, deviceNumber);
     conv.ask("Here is your bill!");
     conv.ask(new BasicCard({
-        text: `The value of the invoice from May is ${bill}.`,
+        text: `The value of the invoice from May is ${bill} pesos.`,
         title: `Bill for ${deviceNumber}`,
         buttons: new Button({
             title: 'Download Bill',
@@ -173,8 +174,8 @@ app.intent(['FaturaPos - 55 10 20 40 88'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill}. Do you wanna send it to you email or prefer to receive it now?</speak>`);
-    conv.ask(new Suggestions('E-mail', 'Now'));
+    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill} pesos. Do you wanna send it to you email or prefer to receive it now?</speak>`);
+    conv.ask(new Suggestions('E-mail', 'Here'));
 });
 app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
     const name = conv.user.storage.userName;
@@ -182,7 +183,7 @@ app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
     const bill = await getBillByName(name, deviceNumber)
     conv.ask("Here is your bill!");
     conv.ask(new BasicCard({
-        text: `The value of the invoice from May is ${bill}.`,
+        text: `The value of the invoice from May is ${bill} pesos.`,
         title: `Bill for ${deviceNumber}`,
         buttons: new Button({
             title: 'Download Bill',
