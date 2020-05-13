@@ -18,6 +18,7 @@ const {
     Button,
     Carousel,
     Image,
+    MediaObject,
 } = require('actions-on-google');
 
 // Import the firebase-functions package for deployment.
@@ -38,7 +39,7 @@ app.intent('Default Welcome Intent', async (conv) => {
         }));
     } else {
         conv.ask(`Hi again, ${name}. What do you want to know?`);
-        conv.ask(new Suggestions('My bill', "News today"));
+        conv.ask(new Suggestions('My invoice', "News today"));
     }
 });
 
@@ -48,13 +49,13 @@ app.intent('actions_intent_PERMISSION', (conv, params, permissionGranted) => {
     if (!permissionGranted) {
         // If the user denied our request, go ahead with the conversation.
         conv.ask(`OK, no worries. What do you want to know?`);
-        conv.ask(new Suggestions('My bill', "News today"));
+        conv.ask(new Suggestions('My invoice', "News today"));
     } else {
         // If the user accepted our request, store their name in
         // the 'conv.data' object for the duration of the conversation.
         conv.user.storage.userName = conv.user.name.display;
         conv.ask(`Thanks, ${conv.user.storage.userName}. What do you want to know?`);
-        conv.ask(new Suggestions('My bill', "News today"));
+        conv.ask(new Suggestions('My invoice', "News today"));
     }
 });
 
@@ -130,7 +131,6 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
     }
 });
 // Handle the Dialogflow intent named 'FaturaPos'.
-// The intent collects a parameter named 'channelName'.
 app.intent('FaturaPos', async (conv) => {
     if (!conv.user.storage.userName) {
         conv.ask(new Permission({
@@ -139,25 +139,27 @@ app.intent('FaturaPos', async (conv) => {
         }));
     } else {
         const name = conv.user.storage.userName;
-        conv.ask(`${name}, which number do you want to know?`);
+        conv.ask(`${name}, you have two numbers. Which one do you want to know about? The first number with the ending 20 9 9? Or the second number with final 40 8 8?`);
         conv.ask(new Suggestions('55 10 10 20 99', '55 10 20 40 88'));
 
     }
 });
+
 app.intent(['FaturaPos - 55 10 10 20 99'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill} pesos. Do you wanna send it to you email or prefer to receive it now?</speak>`);
-    conv.ask(new Suggestions('E-mail', 'Here'));
+    conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
+    conv.ask(new Suggestions('By E-mail', 'By Smartphone', 'By SMS'));
 });
+
 app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber);
-    conv.ask("Here is your bill!");
+    conv.ask("Ok, here's your invoice.");
     conv.ask(new BasicCard({
-        text: `The value of the invoice from May is ${bill} pesos.`,
+        text: `The value of May is ${bill} pesos.`,
         title: `Bill for ${deviceNumber}`,
         buttons: new Button({
             title: 'Download Bill',
@@ -165,25 +167,27 @@ app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
         }),
         image: new Image({
             url: "https://lh3.googleusercontent.com/W1Jwfw3dKIo8BsQFaLc0y4UflpgSUlDKiWn4LgjKXFW1Uxj1t8qfwYu987CnBDWdsENT",
-            alt: "PDF of your bill",
+            alt: "invoice-55-10-10-20-99",
         })
     }));
+    conv.ask(new Suggestions('My invoice', "News today"));
 });
 
 app.intent(['FaturaPos - 55 10 20 40 88'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of the invoice for ${deviceNumber} from May is ${bill} pesos. Do you wanna send it to you email or prefer to receive it now?</speak>`);
-    conv.ask(new Suggestions('E-mail', 'Here'));
+    conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
+    conv.ask(new Suggestions('By E-mail', 'By Smartphone', 'By SMS'));
 });
+
 app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask("Here is your bill!");
+    conv.ask("Ok, here's your invoice.");
     conv.ask(new BasicCard({
-        text: `The value of the invoice from May is ${bill} pesos.`,
+        text: `The value of May is ${bill} pesos.`,
         title: `Bill for ${deviceNumber}`,
         buttons: new Button({
             title: 'Download Bill',
@@ -191,16 +195,59 @@ app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
         }),
         image: new Image({
             url: "https://lh3.googleusercontent.com/W1Jwfw3dKIo8BsQFaLc0y4UflpgSUlDKiWn4LgjKXFW1Uxj1t8qfwYu987CnBDWdsENT",
-            alt: "PDF of your bill",
+            alt: "invoice-55-10-20-40-88",
         })
     }));
+    conv.ask(new Suggestions('My invoice', "News today"));
+});
+
+app.intent('Latest News', async (conv) => {
+    conv.ask("What news do you want to know? Entertainment, Lifestyle, Smartphones, Technology.");
+    conv.ask(new Suggestions("Entertainment", "Lifestyle", "Smartphones", "Technology"));
+});
+
+app.intent('Latest News - Smartphones', async (conv) => {
+    if (!conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO')) {
+        conv.ask('Sorry, this device does not support audio playback.');
+        return;
+    }
+    conv.ask("Here is the latest news about Smartphones.")
+    conv.ask(new MediaObject({
+        name: 'Jazz in Paris',
+        url: 'https://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3',
+        description: 'A funky Jazz tune'
+    }));
+    conv.ask(new Suggestions(['Price of Galaxy S20', 'My invoice']));
+});
+
+app.intent('Smartphone Price', async (conv) => {
+    conv.ask("Galaxy S20 Ultra. 128GB 4G, costs 5,224,90 pesos. We have Gift. Would you like to know more about?");
+    conv.ask(new Suggestions("Yes", "No"));
+});
+
+app.intent('Smartphone Price - yes', async (conv) => {
+    conv.ask("Meet the Samsung Galaxy S20 Ultra 128GB 4G cell phone and take a free TV; If you are a Claro customer, change your financed Smartphone to 6,12,18 or 24 months on your bill. Get it in Kit Amigo and for your first recharge of 2000 or more, we will give you a Welcome Package.");
+    conv.ask(new BasicCard({
+        buttons: new Button({
+            title: 'Buy now',
+            url: 'https://tienda.claro.com.co/claro/celulares/samsung-galaxy-s20-128gb-ultra-4g-negro-con-obsequio'
+        }),
+        image: new Image({
+            url: "https://tienda.claro.com.co/wcsstore/Claro/images/catalog/equipos/646x1000/70035008.jpg",
+            alt: "Promo Samsung Galaxy S20 Ultra 128GB con Obsequio",
+        })
+    }));
+    conv.ask(new Suggestions('My invoice', "News today"));
+});
+
+app.intent('Smartphone Price - no', async (conv) => {
+    conv.ask("It's all right. Can I help you with someting else?");
+    conv.ask(new Suggestions('My invoice', "News today"));
 });
 
 // Handle the Dialogflow follow-up intents
 app.intent(['Movie Search - yes', 'Channel Search - yes'], (conv) => {
     conv.ask('Do you want to search channels, grades or movies?');
-    // If the user is using a screened device, display the carousel
-    //if (conv.screen) return conv.ask(optionsCarousel());
 });
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
