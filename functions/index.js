@@ -139,7 +139,7 @@ app.intent('FaturaPos', async (conv) => {
         }));
     } else {
         const name = conv.user.storage.userName;
-        conv.ask(`${name}, you have two numbers. Which one do you want to know about? The first number with the ending 20 9 9? Or the second number with final 40 8 8?`);
+        conv.ask(`You have two numbers. Which one do you want to know about? The first number with the ending 20 9 9? Or the second number with final 40 8 8?`);
         conv.ask(new Suggestions('55 10 10 20 99', '55 10 20 40 88'));
 
     }
@@ -150,7 +150,7 @@ app.intent(['FaturaPos - 55 10 10 20 99'], async (conv) => {
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber)
     conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
-    conv.ask(new Suggestions('By E-mail', 'By Smartphone', 'By SMS'));
+    conv.ask(new Suggestions('Yes', 'No'));
 });
 
 app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
@@ -170,6 +170,7 @@ app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
             alt: "invoice-55-10-10-20-99",
         })
     }));
+    conv.ask("Can I help you with someting else?");
     conv.ask(new Suggestions('My invoice', "News today"));
 });
 
@@ -178,7 +179,7 @@ app.intent(['FaturaPos - 55 10 20 40 88'], async (conv) => {
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
     conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
-    conv.ask(new Suggestions('By E-mail', 'By Smartphone', 'By SMS'));
+    conv.ask(new Suggestions('Yes', 'No'));
 });
 
 app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
@@ -198,11 +199,12 @@ app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
             alt: "invoice-55-10-20-40-88",
         })
     }));
+    conv.ask("Can I help you with someting else?");
     conv.ask(new Suggestions('My invoice', "News today"));
 });
 
 app.intent('Latest News', async (conv) => {
-    conv.ask("What news do you want to know? Entertainment, Lifestyle, Smartphones, Technology.");
+    conv.ask("What news do you want to know? Entertainment, Lifestyle, Smartphones or Technology.");
     conv.ask(new Suggestions("Entertainment", "Lifestyle", "Smartphones", "Technology"));
 });
 
@@ -211,23 +213,23 @@ app.intent('Latest News - Smartphones', async (conv) => {
         conv.ask('Sorry, this device does not support audio playback.');
         return;
     }
-    conv.ask("Here is the latest news about Smartphones.")
+    conv.ask("Here is the Claro's latest news about Smartphones.")
     conv.ask(new MediaObject({
         name: 'The new Galaxy S20',
-        url: 'http://cassadori.com.br/ClaroPromo_Internacional.mp3',
+        url: 'http://cassadori.com.br/Untitled%20Session%202_mixdown.mp3',
         description: "Get to know the advantages of Samsung's new smartphone."
     }));
-    conv.ask("Do you would like to know more about Galaxy S20 or checking our other news?")
+    //conv.ask("Do you would like to know more about Galaxy S20 or checking our other news?")
     conv.ask(new Suggestions(['More about Galaxy S20', 'Other news', 'Other matters']));
 });
 
 app.intent('Smartphone Price', async (conv) => {
-    conv.ask("Galaxy S20 Ultra. 128GB 4G, costs 5,224,90 pesos. We have Gift. Would you like to know more about?");
+    conv.ask("Galaxy S20 Ultra. 128GB 4G, costs 5,224,90 pesos. We have a Gift for you. Would you like to know more?");
     conv.ask(new Suggestions("Yes", "No"));
 });
 
 app.intent('Smartphone Price - yes', async (conv) => {
-    conv.ask("Meet the Samsung Galaxy S20 Ultra 128GB 4G cell phone and take a free TV; If you are a Claro customer, change your financed Smartphone to 6,12,18 or 24 months on your bill. Get it in Kit Amigo and for your first recharge of 2000 or more, we will give you a Welcome Package.");
+    conv.ask(" Meet the Samsung Galaxy S20 Ultra 128GB 4G cell phone and take a free TV! If you are a Claro customer, change your financed Smartphone to 6,12,18 or 24 months on your bill. Then get it in Kit Amigo for your first recharge of 2000 pesos or more and we will give you a Welcome Package.");
     conv.ask(new BasicCard({
         buttons: new Button({
             title: 'Buy now',
