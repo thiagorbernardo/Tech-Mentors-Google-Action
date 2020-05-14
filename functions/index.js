@@ -213,11 +213,12 @@ app.intent('Latest News - Smartphones', async (conv) => {
     }
     conv.ask("Here is the latest news about Smartphones.")
     conv.ask(new MediaObject({
-        name: 'Jazz in Paris',
-        url: 'https://storage.googleapis.com/automotive-media/Jazz_In_Paris.mp3',
-        description: 'A funky Jazz tune'
+        name: 'The new Galaxy S20',
+        url: 'http://cassadori.com.br/ClaroPromo_Internacional.mp3',
+        description: "Get to know the advantages of Samsung's new smartphone."
     }));
-    conv.ask(new Suggestions(['Price of Galaxy S20', 'My invoice']));
+    conv.ask("Do you would like to know more about Galaxy S20 or checking our other news?")
+    conv.ask(new Suggestions(['More about Galaxy S20', 'Other news', 'Other matters']));
 });
 
 app.intent('Smartphone Price', async (conv) => {
