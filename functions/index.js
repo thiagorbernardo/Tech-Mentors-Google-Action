@@ -1,13 +1,13 @@
 'use strict';
 /* Modules */
 const fetch = require('node-fetch');
+const i18n = require('i18n');
 /* Master Functions for Intents  */
 const getChannelGradeNow = require("./intents/getChannelGradeNow");
 const getChannelNumber = require("./intents/getChannelNumber");
 const getMovie = require("./intents/getMovie");
 const getNewExhibitions = require("./intents/getNewExhibitions");
 const getBillByName = require("./intents/getBillByName");
-
 // Import the Dialogflow module and response creation dependencies
 // from the Actions on Google client library.
 const {
@@ -26,20 +26,27 @@ const functions = require('firebase-functions');
 
 // Instantiate the Dialogflow client.
 const app = dialogflow({ debug: true });
-
-
+// Configuration of locale
+i18n.configure({
+    directory: `${__dirname}/locales`,
+    defaultLocale: 'en-us',
+});
+app.middleware((conv) => {
+    i18n.setLocale(conv.user.locale);
+});
 // Handle the Dialogflow intent named 'Default Welcome Intent'.
 app.intent('Default Welcome Intent', async (conv) => {
+    console.log('Default NNOME' + conv.user.storage.userName)
     const name = conv.user.storage.userName;
     if (!name) {
         // Asks the user's permission to know their name, for personalization.
         conv.ask(new Permission({
-            context: `Hi there, to get to know you better`,
+            context: i18n.__('MSG_WELCOME_CONTEXT'),
             permissions: 'NAME',
         }));
     } else {
-        conv.ask(`Hi again, ${name}. What do you want to know?`);
-        conv.ask(new Suggestions('My invoice', "News today"));
+        conv.ask(i18n.__('MSG_WELCOME_NAME', { name: name }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
     }
 });
 
@@ -48,14 +55,14 @@ app.intent('Default Welcome Intent', async (conv) => {
 app.intent('actions_intent_PERMISSION', (conv, params, permissionGranted) => {
     if (!permissionGranted) {
         // If the user denied our request, go ahead with the conversation.
-        conv.ask(`OK, no worries. What do you want to know?`);
-        conv.ask(new Suggestions('My invoice', "News today"));
+        conv.ask(i18n.__('MSG_PERMISSION_NO_PERM'));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
     } else {
         // If the user accepted our request, store their name in
         // the 'conv.data' object for the duration of the conversation.
         conv.user.storage.userName = conv.user.name.display;
-        conv.ask(`Thanks, ${conv.user.storage.userName}. What do you want to know?`);
-        conv.ask(new Suggestions('My invoice', "News today"));
+        conv.ask(i18n.__('MSG_PERMISSION_PERM', { name: conv.user.storage.userName }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
     }
 });
 
@@ -134,12 +141,12 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
 app.intent('FaturaPos', async (conv) => {
     if (!conv.user.storage.userName) {
         conv.ask(new Permission({
-            context: `You need to let me see your name"`,
+            context: i18n.__('MSG_FATURA_POS_CONTEXT'),
             permissions: 'NAME',
         }));
     } else {
         const name = conv.user.storage.userName;
-        conv.ask(`You have two numbers. Which one do you want to know about? The first number with the ending 20 9 9? Or the second number with final 40 8 8?`);
+        conv.ask(i18n.__('MSG_FATURA_POS'));
         conv.ask(new Suggestions('55 10 10 20 99', '55 10 20 40 88'));
 
     }
@@ -149,20 +156,20 @@ app.intent(['FaturaPos - 55 10 10 20 99'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
-    conv.ask(new Suggestions('Yes', 'No'));
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW', { bill: bill }));
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[2], i18n.__('MSG_SUGGESTIONS')[3]));
 });
 
 app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 10 20 99"
     const bill = await getBillByName(name, deviceNumber);
-    conv.ask("Ok, here's your invoice.");
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW_NOW').before);
     conv.ask(new BasicCard({
-        text: `The value of May is ${bill} pesos.`,
-        title: `Bill for ${deviceNumber}`,
+        text: i18n.__('MSG_FATURA_POS_FOLLOW_NOW_TEXT', { bill: bill }),
+        title: i18n.__('MSG_FATURA_POS_FOLLOW_NOW_TITLE', { deviceNumber: deviceNumber }),
         buttons: new Button({
-            title: 'Download Bill',
+            title: i18n.__('MSG_FATURA_POS_FOLLOW_NOW').button_title,
             url: 'https://www.cinq.com.br/'
         }),
         image: new Image({
@@ -170,28 +177,28 @@ app.intent(['FaturaPos - 55 10 10 20 99 - now'], async (conv) => {
             alt: "invoice-55-10-10-20-99",
         })
     }));
-    conv.ask("Can I help you with someting else?");
-    conv.ask(new Suggestions('My invoice', "News today"));
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW_NOW').after);
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
 });
 
 app.intent(['FaturaPos - 55 10 20 40 88'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask(`<speak>The value of May is ${bill} pesos. Do you want me to send you your invoice?</speak>`);
-    conv.ask(new Suggestions('Yes', 'No'));
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW', { bill: bill }));
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[2], i18n.__('MSG_SUGGESTIONS')[3]));
 });
 
 app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
     const name = conv.user.storage.userName;
     const deviceNumber = "55 10 20 40 88"
     const bill = await getBillByName(name, deviceNumber)
-    conv.ask("Ok, here's your invoice.");
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW_NOW').before);
     conv.ask(new BasicCard({
-        text: `The value of May is ${bill} pesos.`,
-        title: `Bill for ${deviceNumber}`,
+        text: i18n.__('MSG_FATURA_POS_FOLLOW_NOW_TEXT', { bill: bill }),
+        title: i18n.__('MSG_FATURA_POS_FOLLOW_NOW_TITLE', { deviceNumber: deviceNumber }),
         buttons: new Button({
-            title: 'Download Bill',
+            title: i18n.__('MSG_FATURA_POS_FOLLOW_NOW').button_title,
             url: 'https://www.cinq.com.br/'
         }),
         image: new Image({
@@ -199,40 +206,40 @@ app.intent(['FaturaPos - 55 10 20 40 88 - now'], async (conv) => {
             alt: "invoice-55-10-20-40-88",
         })
     }));
-    conv.ask("Can I help you with someting else?");
-    conv.ask(new Suggestions('My invoice', "News today"));
+    conv.ask(i18n.__('MSG_FATURA_POS_FOLLOW_NOW').after);
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
 });
 
 app.intent('Latest News', async (conv) => {
-    conv.ask("What news do you want to know? Entertainment, Lifestyle, Smartphones or Technology.");
-    conv.ask(new Suggestions("Entertainment", "Lifestyle", "Smartphones", "Technology"));
+    conv.ask(i18n.__('MSG_LATEST_NEWS'));
+    conv.ask(new Suggestions(i18n.__('MSG_LATEST_NEWS_SUGGESTIONS')[0], i18n.__('MSG_LATEST_NEWS_SUGGESTIONS')[1], i18n.__('MSG_LATEST_NEWS_SUGGESTIONS')[2], i18n.__('MSG_LATEST_NEWS_SUGGESTIONS')[3]));
 });
 
 app.intent('Latest News - Smartphones', async (conv) => {
     if (!conv.surface.capabilities.has('actions.capability.MEDIA_RESPONSE_AUDIO')) {
-        conv.ask('Sorry, this device does not support audio playback.');
+        conv.ask(i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES').no_audio);
         return;
     }
-    conv.ask("Here is the Claro's latest news about Smartphones.")
+    conv.ask(i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES').before)
     conv.ask(new MediaObject({
-        name: 'The new Galaxy S20',
+        name: i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES').media_name,
         url: 'http://cassadori.com.br/Untitled%20Session%202_mixdown.mp3',
-        description: "Get to know the advantages of Samsung's new smartphone."
+        description: i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES').media_description
     }));
     //conv.ask("Do you would like to know more about Galaxy S20 or checking our other news?")
-    conv.ask(new Suggestions(['More about Galaxy S20', 'Other news', 'Other matters']));
+    conv.ask(new Suggestions(i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES_SUGGESTIONS')[0], i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES_SUGGESTIONS')[1], i18n.__('MSG_LATEST_NEWS_FOLLOW_SMARTPHONES_SUGGESTIONS')[2]));
 });
 
 app.intent('Smartphone Price', async (conv) => {
-    conv.ask("Galaxy S20 Ultra. 128GB 4G, costs 5,224,90 pesos. We have a Gift for you. Would you like to know more?");
-    conv.ask(new Suggestions("Yes", "No"));
+    conv.ask(i18n.__('MSG_SMARTPHONE_PRICE'));
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[2], i18n.__('MSG_SUGGESTIONS')[3]));
 });
 
 app.intent('Smartphone Price - yes', async (conv) => {
-    conv.ask(" Meet the Samsung Galaxy S20 Ultra 128GB 4G cell phone and take a free TV! If you are a Claro customer, change your financed Smartphone to 6,12,18 or 24 months on your bill. Then get it in Kit Amigo for your first recharge of 2000 pesos or more and we will give you a Welcome Package.");
+    conv.ask(i18n.__('MSG_SMARTPHONE_PRICE_YES').before);
     conv.ask(new BasicCard({
         buttons: new Button({
-            title: 'Buy now',
+            title: i18n.__('MSG_SMARTPHONE_PRICE_YES').button_title,
             url: 'https://tienda.claro.com.co/claro/celulares/samsung-galaxy-s20-128gb-ultra-4g-negro-con-obsequio'
         }),
         image: new Image({
@@ -240,12 +247,12 @@ app.intent('Smartphone Price - yes', async (conv) => {
             alt: "Promo Samsung Galaxy S20 Ultra 128GB con Obsequio",
         })
     }));
-    conv.ask(new Suggestions('My invoice', "News today"));
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
 });
 
 app.intent('Smartphone Price - no', async (conv) => {
-    conv.ask("It's all right. Can I help you with someting else?");
-    conv.ask(new Suggestions('My invoice', "News today"));
+    conv.ask(i18n.__('MSG_SMARTPHONE_PRICE_NO'));
+    conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
 });
 
 // Handle the Dialogflow follow-up intents
