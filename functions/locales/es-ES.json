@@ -10,14 +10,14 @@
         "No"
     ],
     "MSG_FATURA_POS_CONTEXT": "¿Puedo ver tu nombre?",
-    "MSG_FATURA_POS": "Tienes dos números. ¿De cuál quieres saber? ¿Sobre el primero número que termina en 20 99? ¿O sobre el segundo número que termina con en 40 88?",
-    "MSG_FATURA_POS_FOLLOW": "El valor de mayo es de {{bill}} pesos. ¿Quieres que te envíe tu factura?",
+    "MSG_FATURA_POS": "Tienes dos números. ¿De cuál quieres saber? ¿Sobre el primero número que termina en 20 99 o sobre el segundo número que termina con en 40 88?",
+    "MSG_FATURA_POS_FOLLOW": "El valor de tu factura de Mayo es de {{bill}} pesos. ¿Quieres que te envíe tu factura?",
     "MSG_FATURA_POS_FOLLOW_NOW": {
-        "before": "Ok, aqui está tu factura.",
+        "before": "Muy bien. Aqui está tu factura.",
         "button_title": "Descargar factura",
         "after": "¿Puedo ayudarte con algo más?"
     },
-    "MSG_FATURA_POS_FOLLOW_NOW_TEXT": "El valor de mayo es de {{bill}} pesos.",
+    "MSG_FATURA_POS_FOLLOW_NOW_TEXT": "El valor de tu factura de Mayo es de {{bill}} pesos.",
     "MSG_FATURA_POS_FOLLOW_NOW_TITLE": "Factura por {{deviceNumber}}",
     "MSG_LATEST_NEWS": "¿Qué noticias quieres saber? Entretenimiento, Estilo de Vida, Teléfonos Inteligentes o Tecnología.",
     "MSG_LATEST_NEWS_SUGGESTIONS": [
@@ -37,7 +37,7 @@
         "Más noticias",
         "Otros asuntos"
     ],
-    "MSG_SMARTPHONE_PRICE" : "Galaxy S20 Ultra. 128GB 4G, cuesta 5,224.90 pesos. Tenemos un regalo para ti. ¿Te gustaría saber más?",
+    "MSG_SMARTPHONE_PRICE" : "Galaxy S20 Ultra. 128GB 4G, cuesta 5.224.90 pesos. Tenemos un regalo para ti. ¿Te gustaría saber más?",
     "MSG_SMARTPHONE_PRICE_YES": {
         "before": "¡Conoce el teléfono celular Samsung Galaxy S20 Ultra 128GB 4G y toma un televisor gratis! Si es cliente de Claro, cambie tu teléfono inteligente financiado a 6,12,18 ó 24 meses en tu factura. Luego, consíguelo en el kit Amigo por su primera recarga de 2000 pesos o más y le daremos un paquete de bienvenida.",
         "button_title": "Compra ahora"
