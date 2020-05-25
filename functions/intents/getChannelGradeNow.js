@@ -9,14 +9,14 @@ module.exports = async function getChannelGradeNow(channelName) {
     if (st_canal.length > 1)
         st_canal = setWordRequirements(st_canal);
     const url = `${APIUrl}/api/admin/channels/getChannelGradeNow?st_canal=${st_canal}&id_cidade=1`;
-    const response = await getData(url);
+    let response = await getData(url);
 
-    if (response != false) {
+    if (response.status == 200) {
+        response = response.content;
         let title = response.titulo;
-        let final = new Date(response.dh_fim);
-        let hours = setTimeUSFormat(final)
-        return `${title} will be on ${channelName} until ${hours}.`
+        let final = response.dh_fim.slice(11,16);
+        return `Agora está passando ${title} até às ${final} no ${channelName}.`
     } else {
-        return "There was a problem, please try again."
+        return "Ocorreu um problema, tente novamente."
     }
 }

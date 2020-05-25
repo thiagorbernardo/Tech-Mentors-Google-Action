@@ -73,14 +73,11 @@ app.intent('Movie Search', async (conv, { movieName }) => {
     if (conv.user.storage.userName) {
         // If we collected user name previously, address them by name and use SSML
         // to embed an audio snippet in the response.
-        conv.ask(`<speak>${conv.user.storage.userName}, ` +
-            `${movie}.` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: movie }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     } else {
-        conv.ask(`<speak>${movie}.` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: movie }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     }
 });
 
@@ -91,14 +88,11 @@ app.intent('Channel Search', async (conv, { channelName }) => {
     if (conv.user.storage.userName) {
         // If we collected user name previously, address them by name and use SSML
         // to embed an audio snippet in the response.
-        conv.ask(`<speak>${conv.user.storage.userName}, ` +
-            `${channel}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: channel }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[7]));
     } else {
-        conv.ask(`<speak>${channel}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: channel }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[7]));
     }
 });
 
@@ -109,14 +103,11 @@ app.intent('Grade Search', async (conv, { channelName }) => {
     if (conv.user.storage.userName) {
         // If we collected user name previously, address them by name and use SSML
         // to embed an audio snippet in the response.
-        conv.ask(`<speak>${conv.user.storage.userName}, ` +
-            `${grade}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: grade }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     } else {
-        conv.ask(`<speak>${grade}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: grade }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     }
 });
 
@@ -127,14 +118,11 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
     if (conv.user.storage.userName) {
         // If we collected user name previously, address them by name and use SSML
         // to embed an audio snippet in the response.
-        conv.ask(`<speak>${conv.user.storage.userName}, ` +
-            `${program}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: program }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     } else {
-        conv.ask(`<speak>${program}` +
-            ` Would you like to search anything else?</speak>`);
-        conv.ask(new Suggestions('Yes', 'No'));
+        conv.ask(i18n.__('MSG_BACKEND', { response: program }));
+        conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     }
 });
 // Handle the Dialogflow intent named 'FaturaPos'.

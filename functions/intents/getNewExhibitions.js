@@ -4,32 +4,38 @@ const setWordRequirements = require("../commom/setWordRequirements");
 const setTimeUSFormat = require("../commom/setTimeUSFormat");
 /* Variables */
 const APIUrl = 'https://claromentors.now.sh'
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+const monthsOfYear = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
 ];
-const prefixNames = ["st", "nd", "rd", "th"]
-module.exports = async function getNewExhibitions(channelName, title){
+module.exports = async function getNewExhibitions(channelName, title) {
     let st_canal = channelName.toLowerCase();
     if (st_canal.length > 1)
         st_canal = setWordRequirements(st_canal);
-    
+
     const url = `${APIUrl}/api/admin/channels/getNewExhibitions?st_canal=${st_canal}&title=${title}&id_cidade=1`
-    const response = await getData(url);
-    if(response != false){
+    let response = await getData(url);
+    console.log(response)
+    if (response.status == 200) {
+        response = response.content;
         let title = response.titulo;
-        let date_start = new Date(response.dh_inicio)
-        let date_end = new Date(response.dh_fim)
-        let time_start = setTimeUSFormat(date_start)
-        let time_end = setTimeUSFormat(date_end)
-        let month = date_start.getUTCMonth()
-        let day = response.dh_inicio.slice(8,10)
-        if(day <= 3){
-            day = day + prefixNames[day-1]
-        }else{
-            day = day + prefixNames[3]
-        }
-        return `${title} will be on ${channelName} again on ${monthNames[month]} ${day} from ${time_start} to ${time_end}.` 
+        let time_start = response.dh_inicio.slice(11, 16);
+        let time_end = response.dh_fim.slice(11, 16);
+        let date_start = new Date(response.dh_inicio);
+        let month = date_start.getUTCMonth();
+        let day = response.dh_inicio.slice(8, 10)
+        return `Irá passar ${title} novamente dia ${day} de ${monthsOfYear[month]} das ${time_start} até às ${time_end} no ${channelName}.`
     } else {
-        return "There was a problem, please try again."
+        return "Ocorreu um problema, tente novamente."
     }
 }
