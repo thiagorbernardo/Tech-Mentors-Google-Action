@@ -2,15 +2,15 @@
 const getData = require("../commom/getData");
 const setWordRequirements = require("../commom/setWordRequirements");
 /* Variables */
-const APIUrl = 'https://claromentors.now.sh'
+const APIUrl = 'https://claromentors.azurewebsites.net'
 module.exports = async function getChannelNumber(channelName) {
     let st_canal = channelName.toLowerCase();
     if (st_canal.length > 1)
         st_canal = setWordRequirements(st_canal);
-    const url = `${APIUrl}/api/admin/channels/getIDChannelByName?st_canal=${st_canal}&id_cidade=1`;
+    const url = `${APIUrl}/api/getIDChannelByName?st_canal=${st_canal}&id_cidade=1`;
     let response_ID = await getData(url);
     if (response_ID.status == 200) {
-        const new_url = `${APIUrl}/api/admin/channels/getChannelByID?id_revel=${response_ID.content}`;
+        const new_url = `${APIUrl}/api/getChannelByID?id_revel=${response_ID.content}`;
         let response = await getData(new_url);
         if (response.status == 200) {
             response = response.content;

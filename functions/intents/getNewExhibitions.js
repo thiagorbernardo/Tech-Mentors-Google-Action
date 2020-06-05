@@ -3,7 +3,7 @@ const getData = require("../commom/getData");
 const setWordRequirements = require("../commom/setWordRequirements");
 const setTimeUSFormat = require("../commom/setTimeUSFormat");
 /* Variables */
-const APIUrl = 'https://claromentors.now.sh'
+const APIUrl = 'https://claromentors.azurewebsites.net'
 const monthsOfYear = [
     'Janeiro',
     'Fevereiro',

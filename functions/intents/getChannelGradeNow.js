@@ -3,7 +3,7 @@ const getData = require("../commom/getData");
 const setWordRequirements = require("../commom/setWordRequirements");
 const setTimeUSFormat = require("../commom/setTimeUSFormat");
 /* Variables */
-const APIUrl = 'https://claromentors.now.sh'
+const APIUrl = 'https://claromentors.azurewebsites.net'
 module.exports = async function getChannelGradeNow(channelName) {
     let st_canal = channelName.toLowerCase();
     if (st_canal.length > 1)
