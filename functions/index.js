@@ -1,6 +1,5 @@
 'use strict';
 /* Modules */
-const fetch = require('node-fetch');
 const i18n = require('i18n');
 /* Master Functions for Intents  */
 const getChannelGradeNow = require("./intents/getChannelGradeNow");
@@ -8,6 +7,8 @@ const getChannelNumber = require("./intents/getChannelNumber");
 const getMovie = require("./intents/getMovie");
 const getNewExhibitions = require("./intents/getNewExhibitions");
 const getBillByName = require("./intents/getBillByName");
+const getOutageInfo = require("./intents/getOutageInfo");
+const getMockOutageInfo = require("./intents/getMockOutageInfo");
 // Import the Dialogflow module and response creation dependencies
 // from the Actions on Google client library.
 const {
@@ -241,11 +242,6 @@ app.intent('Smartphone Price - yes', async (conv) => {
 app.intent('Smartphone Price - no', async (conv) => {
     conv.ask(i18n.__('MSG_SMARTPHONE_PRICE_NO'));
     conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[0], i18n.__('MSG_SUGGESTIONS')[1]));
-});
-
-// Handle the Dialogflow follow-up intents
-app.intent(['Movie Search - yes', 'Channel Search - yes'], (conv) => {
-    conv.ask('Do you want to search channels, grades or movies?');
 });
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
