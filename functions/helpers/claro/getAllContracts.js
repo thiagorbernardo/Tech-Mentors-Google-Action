@@ -1,5 +1,5 @@
 /* Commom functions */
-const getData = require("../commom/getData.js");
+const getData = require("../../commom/getData.js");
 /* Variables */
 const PRD_CLARO = "https://prd-gw.claro.com.br"
 module.exports = async function getAllContracts(token) {

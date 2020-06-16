@@ -10,10 +10,10 @@
         "Não",
         "Procurar filmes",
         "Procurar canal",
-        "Procurar programação de um canal",
-        "Quando um programa irá passar novamente"
+        "Procurar programação",
+        "Quando irá passar jumanji"
     ],
-    "MSG_BACKEND": "{{response}}. Deseja procurar mais algo?",
+    "MSG_BACKEND": "{{response}} Deseja procurar mais algo?",
     "MSG_FATURA_POS_CONTEXT": "You need to let me see your name",
     "MSG_FATURA_POS": "You have two numbers. Which one do you want to know about? The first number with the ending 20 9 9? Or the second number with final 40 8 8?",
     "MSG_FATURA_POS_FOLLOW": "The value of May is {{bill}} pesos. Do you want me to send you your invoice?",

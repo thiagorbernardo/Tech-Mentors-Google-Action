@@ -23,7 +23,7 @@ module.exports = async function getNewExhibitions(channelName, title) {
     if (st_canal.length > 1)
         st_canal = setWordRequirements(st_canal);
 
-    const url = `${APIUrl}/api/admin/channels/getNewExhibitions?st_canal=${st_canal}&title=${title}&id_cidade=1`
+    const url = `${APIUrl}/api/getNewExhibitions?st_canal=${st_canal}&title=${title}&id_cidade=1`
     let response = await getData(url);
     console.log(response)
     if (response.status == 200) {

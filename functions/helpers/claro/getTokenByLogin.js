@@ -1,5 +1,5 @@
 /* Commom functions */
-const postData = require("../commom/postData.js");
+const postData = require("../../commom/postData");
 /* Variables */
 const PRD_CLARO = "https://prd-gw.claro.com.br"
 module.exports = async function getTokenByLogin(username, password) {

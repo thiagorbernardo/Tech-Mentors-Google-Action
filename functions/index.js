@@ -126,6 +126,18 @@ app.intent('New Exhibitions', async (conv, { channelName, title }) => {
         conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
     }
 });
+// app.intent('Grade Search', async (conv, { channelName }) => {
+//     const grade = await getChannelGradeNow(channelName)
+//     if (conv.user.storage.userName) {
+//         // If we collected user name previously, address them by name and use SSML
+//         // to embed an audio snippet in the response.
+//         conv.ask(i18n.__('MSG_BACKEND', { response: grade }));
+//         conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
+//     } else {
+//         conv.ask(i18n.__('MSG_BACKEND', { response: grade }));
+//         conv.ask(new Suggestions(i18n.__('MSG_SUGGESTIONS')[5], i18n.__('MSG_SUGGESTIONS')[6]));
+//     }
+// });
 // Handle the Dialogflow intent named 'FaturaPos'.
 app.intent('FaturaPos', async (conv) => {
     if (!conv.user.storage.userName) {
