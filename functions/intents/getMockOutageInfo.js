@@ -1,8 +1,8 @@
 /* Commom functions */
-const claroService = require("../services/claroService")
+const mockOutage = require("../helpers/claro/mockOutage");
 /* Variables */
 module.exports = async function getMockOutageInfo() {
-    let outage = await claroService.mockOutage()
+    let outage = await mockOutage()
     let finalMsg = 'Thiago, '
     outage.products.forEach(name => {
         prodName = name.productName.toLowerCase()
